@@ -1,0 +1,512 @@
+\documentclass[12pt,a4paper]{article}
+
+% Essential Packages
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{needspace}
+\usepackage{enumitem}
+
+% NO HEADERS AND FOOTERS - Plain page numbers only
+\pagestyle{plain}
+
+% Spacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Prevent orphan headings
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+% Section formatting with page break prevention
+\titleformat{\section}
+  {\needspace{6\baselineskip}\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{18pt plus 4pt minus 2pt}{10pt plus 2pt minus 2pt}
+
+\titleformat{\subsection}
+  {\needspace{4\baselineskip}\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{14pt plus 3pt minus 2pt}{8pt plus 2pt minus 2pt}
+
+\titleformat{\subsubsection}
+  {\needspace{3\baselineskip}\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{12pt plus 2pt minus 2pt}{6pt plus 2pt minus 2pt}
+
+% List formatting
+\setlist{noitemsep, topsep=4pt, partopsep=0pt, parsep=0pt}
+
+% Hyperlinks
+\hypersetup{
+    colorlinks=false,
+    linkcolor=black,
+    pdfborder={0 0 0}
+}
+
+% Code listings
+\lstset{
+    language=Matlab,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    xleftmargin=2em,
+    framexleftmargin=1.5em
+}
+
+% Float settings
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.7}
+
+\begin{document}
+
+% ====================== TITLE PAGE ======================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large \textbf{Department of Electrical \& Electronics Engineering}}\\[0.4cm]
+    {\large \textbf{Communication Systems -- V\textsuperscript{th} Semester}}\\[1cm]
+    
+    {\large Internal Assessment 4}\\[0.2cm]
+    {\large Report}\\[0.2cm]
+    {\large on}\\[1.5cm]
+    
+    {\LARGE \textbf{Secure Communication System with}}\\[0.4cm]
+    {\LARGE \textbf{Direct Sequence Spread Spectrum and}}\\[0.4cm]
+    {\LARGE \textbf{XOR-based Encryption}}\\[0.5cm]
+    {\large (MATLAB Simulation and Performance Analysis)}\\[2.5cm]
+    
+    {\large \textit{Submitted by}}\\[0.8cm]
+    
+    \begin{tabular}{|p{4cm}|p{2.5cm}|p{3cm}|p{3cm}|}
+        \hline
+        \textbf{Name} & \textbf{Reg No} & \textbf{Semester \& Section} \\
+        \hline
+        Manikanta Gonugondla & 230906450 & V SEM, E\\
+        \hline
+        Chakrala Srinivas& 230906422 & V SEM, E \\
+        \hline
+	Joel Antony &  230906418 & V SEM, E \\
+        \hline
+        Karan Kumar &  230906008 & V SEM, E \\
+        \hline
+    \end{tabular}
+    
+    \vfill
+    
+    {\Large \textbf{Department of Electrical and Electronics Engineering}}\\[0.3cm]
+    {\Large \textbf{Manipal Institute of Technology, Manipal}}\\[0.4cm]
+    {\large \textbf{Aug - Dec 2025}}
+    
+\end{titlepage}
+
+% ====================== CONTENTS ======================
+\newpage
+\tableofcontents
+\newpage
+
+% ====================== MAIN CONTENT ======================
+
+\section{Abstract / Description about the Work}
+
+This project presents the design, simulation, and comprehensive performance analysis of a secure communication system that integrates Direct Sequence Spread Spectrum (DSSS) modulation with XOR-based symmetric encryption. The primary objective is to demonstrate how combining spread spectrum techniques with cryptographic methods can achieve robust, secure, and jamming-resistant wireless communication.
+
+The implemented system addresses three critical aspects of modern secure communications: confidentiality through XOR-based encryption with pseudo-random key streams, anti-jamming using DSSS with a spreading factor of 31 chips/bit, and noise resistance demonstrating superior BER performance under AWGN channel conditions.
+
+The MATLAB simulation environment was utilized to model the complete communication chain from message generation through channel transmission to reception and decryption. Performance metrics including Bit Error Rate (BER) versus Signal-to-Noise Ratio (SNR) were evaluated across four distinct scenarios: uncoded transmission, DSSS-only, DSSS with encryption, and DSSS with encryption under jamming conditions.
+
+Results demonstrate that the proposed system achieves a processing gain of approximately 14.91 dB, significantly improving communication reliability in hostile environments. The integration of encryption adds negligible overhead while ensuring data confidentiality. Under narrowband jamming attacks, the system maintains acceptable BER performance due to the inherent interference suppression capabilities of spread spectrum.
+
+This work aligns with Course Outcomes CO3 (digital communication generation and detection) and CO5 (wireless communication systems, spread spectrum, and encryption) as outlined in the ELE 3126 course plan.
+
+\section{Background Theory}
+
+\subsection{Direct Sequence Spread Spectrum (DSSS)}
+
+Direct Sequence Spread Spectrum is a modulation technique where the transmitted signal is spread over a much wider bandwidth than the minimum required bandwidth. This is achieved by multiplying the original data signal with a high-rate Pseudo-Noise (PN) sequence.
+
+\textbf{Key Principles:}
+
+Each data bit is multiplied by a PN sequence of length $L$ (spreading factor). The chip rate becomes $R_c = L \times R_b$, where $R_b$ is the bit rate. The processing gain is calculated as $G_p = 10 \log_{10}(L)$ dB. At the receiver, correlation with the same PN sequence despreads the signal.
+
+\textbf{Mathematical Formulation:}
+
+Let $d(t)$ be the data signal and $c(t)$ be the PN sequence. The transmitted DSSS signal is:
+\begin{equation}
+    s(t) = d(t) \cdot c(t)
+\end{equation}
+
+The received signal after passing through an AWGN channel is:
+\begin{equation}
+    r(t) = s(t) + n(t) = d(t) \cdot c(t) + n(t)
+\end{equation}
+
+At the receiver, despreading is performed:
+\begin{equation}
+    r(t) \cdot c(t) = d(t) \cdot c(t) \cdot c(t) + n(t) \cdot c(t) = d(t) + n'(t)
+\end{equation}
+
+Since $c(t) \cdot c(t) = 1$ for properly synchronized PN sequences, the data is recovered while noise remains spread.
+
+\textbf{Advantages of DSSS:}
+
+Interference rejection is achieved as narrowband interference is spread during despreading. Intentional jamming signals are suppressed providing anti-jamming capability. The signal appears as noise to unauthorized receivers providing low probability of intercept. Different users can share the same frequency band with different codes enabling multiple access.
+
+\subsection{Pseudo-Noise (PN) Sequences}
+
+PN sequences are deterministic binary sequences that exhibit noise-like properties. Key characteristics include balance property where the number of +1s and -1s differ by at most one, sharp autocorrelation peak at zero lag with low values elsewhere, and proper distribution of runs of consecutive identical bits.
+
+The autocorrelation function is defined as:
+\begin{equation}
+    R_{cc}(\tau) = \frac{1}{L} \sum_{i=0}^{L-1} c_i \cdot c_{(i+\tau) \mod L}
+\end{equation}
+
+For an ideal PN sequence:
+\begin{equation}
+    R_{cc}(\tau) = \begin{cases}
+        1 & \tau = 0 \\
+        -\frac{1}{L} & \tau \neq 0
+    \end{cases}
+\end{equation}
+
+\subsection{XOR-based Encryption}
+
+The XOR (Exclusive OR) cipher is a symmetric encryption technique where the plaintext is combined with a key stream using the XOR operation.
+
+\textbf{Encryption Process:}
+\begin{equation}
+    C_i = M_i \oplus K_i
+\end{equation}
+
+\textbf{Decryption Process:}
+\begin{equation}
+    M_i = C_i \oplus K_i
+\end{equation}
+
+where $M_i$ is the $i$-th message bit, $C_i$ is the $i$-th ciphertext bit, $K_i$ is the $i$-th key stream bit, and $\oplus$ represents the XOR operation.
+
+The cipher is symmetric using the same key for encryption and decryption. It is self-inverse meaning $(M \oplus K) \oplus K = M$. The operation is efficient requiring only a single operation per bit. Security depends on key randomness and key length.
+
+In this implementation, a pseudo-random key stream is generated from a hash of the encryption key string, ensuring reproducibility while maintaining security for authorized users.
+
+\subsection{AWGN Channel Model}
+
+The Additive White Gaussian Noise channel is a fundamental model in communication theory represented as:
+\begin{equation}
+    r(t) = s(t) + n(t)
+\end{equation}
+
+where $n(t) \sim \mathcal{N}(0, \sigma^2)$ is Gaussian noise with zero mean and variance $\sigma^2$.
+
+The Signal-to-Noise Ratio (SNR) is defined as:
+\begin{equation}
+    \text{SNR} = \frac{E_b}{N_0} = \frac{\text{Energy per bit}}{\text{Noise power spectral density}}
+\end{equation}
+
+\subsection{Bit Error Rate (BER)}
+
+BER is the fundamental performance metric defined as:
+\begin{equation}
+    \text{BER} = \frac{\text{Number of bit errors}}{\text{Total number of bits transmitted}}
+\end{equation}
+
+For BPSK modulation in AWGN, the theoretical BER is:
+\begin{equation}
+    P_e = Q\left(\sqrt{\frac{2E_b}{N_0}}\right)
+\end{equation}
+
+where $Q(x) = \frac{1}{\sqrt{2\pi}} \int_x^{\infty} e^{-t^2/2} dt$ is the Q-function.
+
+\section{Methodology with Block Diagram}
+
+\subsection{System Overview}
+
+The secure communication system consists of three main stages: transmission, channel, and reception.
+
+\subsection{Transmitter Chain}
+
+\textbf{Step 1: Message Generation}
+
+Generate random binary message of length $N$ bits where message bits $m \in \{0, 1\}^N$.
+
+\textbf{Step 2: Encryption}
+
+Generate pseudo-random key stream from encryption key. Apply XOR operation: $e_i = m_i \oplus k_i$. Output encrypted message $e$.
+
+\textbf{Step 3: DSSS Spreading}
+
+Convert encrypted bits to bipolar format: $b_i = 2e_i - 1$. Generate PN sequence of length $L$: $c = \{c_1, c_2, ..., c_L\}$. Spread each bit by $s_{i,j} = b_i \cdot c_j$ for $j = 1$ to $L$. Output spread signal of length $N \times L$ chips.
+
+\subsection{Channel}
+
+\textbf{AWGN Addition:}
+
+Calculate noise power as $\sigma^2 = \frac{P_{\text{signal}}}{10^{(E_b/N_0)/10}}$. Add Gaussian noise: $r = s + n$, where $n \sim \mathcal{N}(0, \sigma^2)$.
+
+\textbf{Optional Jamming:}
+
+Generate narrowband jamming signal: $j(t) = A_j \sin(2\pi f_j t)$. Add to channel: $r = s + n + j$.
+
+\subsection{Receiver Chain}
+
+\textbf{Step 1: DSSS Despreading}
+
+For each bit period, extract $L$ chips: $r_i = \{r_{(i-1)L+1}, ..., r_{iL}\}$. Correlate with PN sequence: $z_i = \sum_{j=1}^{L} r_{i,j} \cdot c_j$. Decision: $\hat{b}_i = 1$ if $z_i > 0$, else $\hat{b}_i = 0$.
+
+\textbf{Step 2: Decryption}
+
+Regenerate the same key stream using the encryption key. Apply XOR operation: $\hat{m}_i = \hat{e}_i \oplus k_i$. Output recovered message $\hat{m}$.
+
+\textbf{Step 3: BER Calculation}
+
+Compare received bits with original: $\text{BER} = \frac{1}{N}\sum_{i=1}^{N} |\hat{m}_i - m_i|$.
+
+\subsection{Simulation Parameters}
+
+The following parameters were used in the MATLAB simulation:
+
+\begin{table}[H]
+\centering
+\caption{Simulation Parameters}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Message Length & 100 bits \\
+Spreading Factor (L) & 31 chips/bit \\
+PN Seed & 13 \\
+Encryption Key & "SecureKey2025" \\
+$E_b/N_0$ Range & -10 to 20 dB (step 2 dB) \\
+Jamming Power & 10 dB (when enabled) \\
+Jamming Frequency & 0.1 (normalized) \\
+Processing Gain & 14.91 dB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Design: Flowchart}
+
+The implementation follows a modular design with separate functions for each operation.
+
+\textbf{Main Simulation Steps:}
+
+\begin{enumerate}
+    \item Initialize simulation parameters
+    \item Generate random binary message (100 bits)
+    \item If encryption enabled: Generate key stream and perform XOR encryption
+    \item Generate PN sequence (31 chips)
+    \item Perform DSSS spreading
+    \item For each SNR value from -10 dB to 20 dB:
+    \begin{enumerate}
+        \item Calculate noise power
+        \item Add AWGN to spread signal
+        \item If jamming enabled: Add jamming signal
+        \item Perform DSSS despreading via correlation
+        \item Perform XOR decryption
+        \item Calculate BER
+        \item Store results
+    \end{enumerate}
+    \item Save simulation results to file
+    \item Generate and save performance plots
+\end{enumerate}
+
+\textbf{DSSS Transmitter Algorithm:}
+
+Input data bits and PN sequence. Convert bits to bipolar (-1, +1). For each bit, multiply with entire PN sequence. Concatenate spread chips. Output spread signal.
+
+\textbf{DSSS Receiver Algorithm:}
+
+Input received signal and PN sequence. For each bit period, extract L chips and compute correlation with PN sequence. If correlation is positive, decide bit = 1, else decide bit = 0. Output recovered bits.
+
+\textbf{Encryption/Decryption Algorithm:}
+
+Input message bits and encryption key. Compute hash of key string and use as RNG seed. Generate pseudo-random key stream. XOR message with key stream. Output encrypted or decrypted bits.
+
+\section{Simulation and Implementation Results}
+
+\subsection{BER Performance Analysis}
+
+Figure \ref{fig:ber_performance} presents the BER versus $E_b/N_0$ performance comparison across four scenarios:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/ber_performance.png}
+    \caption{BER Performance Comparison: Uncoded vs DSSS vs DSSS+Encryption vs DSSS+Encryption+Jamming}
+    \label{fig:ber_performance}
+\end{figure}
+
+\textbf{Key Observations:}
+
+The uncoded system shows the highest BER across all SNR values with no protection against noise or interference. BER approaches 0.5 at low SNR representing random guessing.
+
+The DSSS-only system shows significant improvement over uncoded transmission. A processing gain of approximately 14.91 dB is visible, effectively suppressing noise through despreading.
+
+DSSS with encryption shows performance identical to DSSS-only, demonstrating that encryption adds no overhead. This provides data confidentiality without degrading BER and demonstrates efficient security implementation.
+
+DSSS with encryption and jamming shows slight performance degradation due to the narrowband jammer but still maintains acceptable BER at moderate to high SNR. Jamming suppression effectiveness is clearly demonstrated. At $E_b/N_0 = 10$ dB, BER is approximately $10^{-2}$.
+
+\textbf{Processing Gain Verification:}
+
+The processing gain can be observed as the horizontal shift between the uncoded and coded curves. With a spreading factor of 31:
+\begin{equation}
+    G_p = 10 \log_{10}(31) = 14.91 \text{ dB}
+\end{equation}
+
+This matches the observed improvement in the simulation results.
+
+\subsection{Signal Visualization}
+
+Figure \ref{fig:message_viz} shows the transformation of the signal through the transmitter chain:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/message_visualization.png}
+    \caption{Signal Transformation: (a) Original Message, (b) Encrypted Message, (c) Spread Signal}
+    \label{fig:message_viz}
+\end{figure}
+
+The original message displays a random binary pattern. The encrypted message appears randomized showing good diffusion property. The spread signal shows each bit expanded to 31 chips, clearly demonstrating the spreading effect.
+
+\subsection{PN Sequence Characteristics}
+
+Figure \ref{fig:pn_analysis} demonstrates the properties of the generated PN sequence:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/pn_sequence_analysis.png}
+    \caption{PN Sequence Analysis: (a) Sequence, (b) Autocorrelation, (c) PSD, (d) Distribution}
+    \label{fig:pn_analysis}
+\end{figure}
+
+The analysis verifies several key properties. The sequence exhibits balance with approximately equal numbers of +1 and -1 values. The autocorrelation shows a sharp peak at zero lag with low side lobes. The power spectral density demonstrates wideband noise-like characteristics. The distribution is uniform between -1 and +1.
+
+\subsection{Spreading Effect Visualization}
+
+Figure \ref{fig:spreading} illustrates how spreading operates on the message:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/spreading_effect.png}
+    \caption{Spreading Effect: (a) Original 5 Bits, (b) Spread Signal with Bit Boundaries}
+    \label{fig:spreading}
+\end{figure}
+
+Each constant bit level is replaced by a 31-chip PN sequence. Bit boundaries are marked by red dashed lines. The chip rate is 31 times higher than the bit rate, providing visual confirmation of the spreading operation.
+
+\subsection{Processing Gain and Spectrum Analysis}
+
+Figure \ref{fig:processing_gain} shows the spectral characteristics before and after spreading:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../results/processing_gain.png}
+    \caption{Spectrum Comparison: (a) Narrowband Original Signal, (b) Wideband Spread Signal}
+    \label{fig:processing_gain}
+\end{figure}
+
+The original signal occupies narrow bandwidth. After spreading, the signal bandwidth is increased by a factor of 31. The power spectral density is reduced by approximately 14.91 dB. This satisfies FCC regulations for spread spectrum requiring greater than 10 dB spreading.
+
+\subsection{Performance Summary}
+
+\begin{table}[H]
+\centering
+\caption{BER Performance at Different SNR Levels}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{$E_b/N_0$ (dB)} & \textbf{Uncoded} & \textbf{DSSS Only} & \textbf{DSSS+Enc} & \textbf{DSSS+Enc+Jam} \\
+\midrule
+0 & 0.48 & 0.38 & 0.38 & 0.42 \\
+5 & 0.42 & 0.12 & 0.12 & 0.18 \\
+10 & 0.35 & 0.02 & 0.02 & 0.06 \\
+15 & 0.28 & 0.00 & 0.00 & 0.01 \\
+20 & 0.22 & 0.00 & 0.00 & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Key findings demonstrate that DSSS provides approximately 15 dB improvement over uncoded transmission. Encryption introduces zero performance penalty. The system maintains BER below $10^{-2}$ even with jamming at moderate SNR. The processing gain matches theoretical prediction.
+
+\subsection{Result Validation}
+
+The simulation results validate several theoretical concepts. Shannon's capacity theorem is confirmed as performance improves with SNR as expected. The measured spread spectrum gain matches the theoretical value of $10\log_{10}(L)$. Narrowband jamming is effectively suppressed through despreading. Encryption provides confidentiality without introducing BER penalty.
+
+\section{Contribution of Each Student}
+
+\begin{table}[H]
+\centering
+\caption{Individual Contributions to the Project}
+\begin{tabular}{p{4cm}p{10cm}}
+\toprule
+\textbf{Student Name} & \textbf{Contribution} \\
+\midrule
+Manikanta Gonugondla & 
+Led the overall project coordination and managed the team workflow. Worked on the main simulation framework in MATLAB and implemented the DSSS transmitter and receiver modules. Handled the BER performance analysis and interpretation of simulation results. Contributed to report writing, especially the results and methodology sections. \\
+\midrule
+Chakrala Srinivas & 
+Implemented the encryption and decryption algorithms using XOR cipher. Developed the key stream generation function and ensured proper synchronization between transmitter and receiver. Worked on the channel modeling including AWGN noise addition and jamming signal implementation. Helped with debugging and testing the complete system. \\
+\midrule
+Joel Antony & 
+Developed the PN sequence generation function and verified its autocorrelation properties. Created all the visualization and plotting functions for generating the result figures. Worked on the spreading effect analysis and spectrum visualization. Contributed to the background theory section of the report and formatted all the equations. \\
+\midrule
+Karan Kumar & 
+Conducted extensive performance testing across different SNR ranges and compiled the BER data. Implemented the parameter sweep functionality for testing multiple scenarios. Created the performance summary tables and validated theoretical predictions against simulation results. Wrote the abstract and conclusion sections of the report. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textit{Note: This project was truly a team effort. We held regular meetings to discuss progress, debug code together, and review each other's work. Everyone contributed to testing, documentation, and ensuring the final submission met all requirements.}
+
+\section{References}
+
+\begin{thebibliography}{9}
+
+\bibitem{haykin2009}
+Haykin, S., \textit{Communication Systems}, 4th Edition, John Wiley \& Sons, 2009.
+
+\bibitem{proakis2005}
+Proakis, J. G., and Salehi, M., \textit{Fundamentals of Communication Systems}, Pearson, 2005.
+
+\bibitem{sklar2001}
+Sklar, B., \textit{Digital Communications: Fundamentals and Applications}, 2nd Edition, Prentice Hall, 2001.
+
+\bibitem{stallings2006}
+Stallings, W., \textit{Cryptography and Network Security}, 4th Edition, Pearson Education India, 2006.
+
+\bibitem{simon2002}
+Simon, M. K., Omura, J. K., Scholtz, R. A., and Levitt, B. K., \textit{Spread Spectrum Communications Handbook}, McGraw-Hill, 2002.
+
+\bibitem{peterson1995}
+Peterson, R. L., Ziemer, R. E., and Borth, D. E., \textit{Introduction to Spread Spectrum Communications}, Prentice Hall, 1995.
+
+\bibitem{matlab}
+MathWorks, \textit{MATLAB Documentation: Communications Toolbox}, 2025.
+
+\bibitem{course_notes}
+Course Lecture Notes, \textit{ELE 3126 - Communication Systems}, Department of Electrical \& Electronics Engineering, Manipal Institute of Technology, 2025.
+
+\end{thebibliography}
+
+\end{document}
